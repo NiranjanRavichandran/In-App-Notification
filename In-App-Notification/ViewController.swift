@@ -14,16 +14,17 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let button = UIButton(frame: CGRectMake(0, 0, 150, 40))
-        button.setTitle("Notify", forState: .Normal)
-        button.backgroundColor = UIColor.darkGrayColor()
+        button.setTitle("New Notification", forState: .Normal)
+        button.layer.cornerRadius = 4
         button.center = self.view.center
+        button.backgroundColor = UIColor.darkGrayColor()
         button.addTarget(self, action: #selector(self.addNotification), forControlEvents: .TouchUpInside)
         self.view.addSubview(button)
         
     }
     
     func addNotification() {
-        let notifView = ADNotificationView(message: "My first notification")
+        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Alert)
         notifView.show()
     }
 
