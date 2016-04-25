@@ -24,7 +24,8 @@ class ViewController: UIViewController {
     }
     
     func addNotification() {
-        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Blur)
+        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Small, notificationWithIcon: nil)
+        notifView.backgroundColor = UIColor.redColor()
         notifView.show()
     }
 

@@ -8,13 +8,14 @@
 
 import UIKit
 
-private let ADViewHeight: CGFloat = 75
+private var ADViewHeight: CGFloat = 75
 
 public enum ADNotificationType {
     case Success
     case Alert
     case Error
     case Blur
+    case Small
 }
 
 final public class ADNotificationView: UIVisualEffectView {
@@ -23,6 +24,9 @@ final public class ADNotificationView: UIVisualEffectView {
     private var iconImageView = UIImageView()
     private var button = UIButton()
     public var duration: NSTimeInterval = 3
+    public var statusBarVisible = false
+    private var isSmallNotification = false
+    public var textColor: UIColor?
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -30,11 +34,11 @@ final public class ADNotificationView: UIVisualEffectView {
     
     //Initialize with message
     convenience public init(message: String) {
-        self.init(message: message, notificationType: .Alert)
+        self.init(message: message, notificationType: .Alert, notificationWithIcon: UIImage(named: "bell.png"))
     }
     
     //Initialize with message and notification type
-    public init(message: String, notificationType: ADNotificationType) {
+    public init(message: String, notificationType: ADNotificationType, notificationWithIcon icon: UIImage?) {
         super.init(effect: UIBlurEffect(style: .Dark))
         //super.init(frame: CGRectZero)
         
@@ -63,14 +67,38 @@ final public class ADNotificationView: UIVisualEffectView {
             self.backgroundColor = UIColor(red: 43/255, green: 181/255, blue: 255/255, alpha: 1.0)
             iconImageView.image = UIImage(named: "message.png")
             
-        case .Blur: break
+        case .Blur:
+            iconImageView.image = UIImage(named: "bell.png")
+            
+        case .Small:
+            ADViewHeight = 27
+            self.isSmallNotification = true
+            self.frame.size.height = ADViewHeight
+            self.effect = UIBlurEffect(style: .Light)
+            iconImageView.removeFromSuperview()
             
         }
         
+        if let _ = icon {
+            iconImageView.image = icon
+        }
+        
+        
         //Frame for notitification title
-        messageLabel.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 50, ADViewHeight - 10)
-        messageLabel.textAlignment = NSTextAlignment.Center
+        messageLabel.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, ADViewHeight - 10)
+        
         messageLabel.textColor = UIColor.whiteColor()
+        
+        
+        if !self.isSmallNotification {
+            messageLabel.frame.origin.x += 65
+            messageLabel.textAlignment = NSTextAlignment.Justified
+        }else {
+            //Setting up view not small notification view
+            messageLabel.textAlignment = NSTextAlignment.Center
+            messageLabel.center.x = self.center.x
+        }
+        
         messageLabel.center.y = self.center.y
         
         messageLabel.numberOfLines = 0
@@ -88,8 +116,15 @@ final public class ADNotificationView: UIVisualEffectView {
         
         if let keyWindow = UIApplication.sharedApplication().keyWindow {
             //To place the view over status bar
-            keyWindow.windowLevel = UIWindowLevelStatusBar + 1
+            if !self.statusBarVisible {
+                keyWindow.windowLevel = UIWindowLevelStatusBar + 1
+            }
             keyWindow.addSubview(self)
+        }
+        
+        //Change text color
+        if let _ = textColor {
+            messageLabel.textColor = self.textColor
         }
         
         //Add the notification to the current window
