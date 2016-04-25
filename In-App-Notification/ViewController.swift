@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       // self.view.backgroundColor = UIColor(red: 255/255, green: 210/255, blue: 90/255, alpha: 1.0)
         let button = UIButton(frame: CGRectMake(0, 0, 150, 40))
         button.setTitle("New Notification", forState: .Normal)
         button.layer.cornerRadius = 4
@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     func addNotification() {
-        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Alert)
+        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Blur)
         notifView.show()
     }
 
