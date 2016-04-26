@@ -3,7 +3,7 @@
 //  In-App-Notification
 //
 //  Created by Niranjan Ravichandran on 15/04/16.
-//  Copyright © 2016 Adavers. All rights reserved.
+//  Copyright © 2016 Niranjan Ravichandran. All rights reserved.
 //
 
 import UIKit
@@ -26,6 +26,8 @@ class ViewController: UIViewController {
     func addNotification() {
         let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Small, notificationWithIcon: nil)
         notifView.backgroundColor = UIColor.redColor()
+        notifView.entryDirection = ADNotificationDirection.Bottom
+        notifView.exitDirection = ADNotificationDirection.Right
         notifView.show()
     }
 

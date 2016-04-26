@@ -95,7 +95,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
-				ORGANIZATIONNAME = Adavers;
+				ORGANIZATIONNAME = Sparrow;
 				TargetAttributes = {
 					429BE6C21CC1AC16002A9C6B = {
 						CreatedOnToolsVersion = 7.3;
@@ -290,6 +290,7 @@
 				429BE6D71CC1AC16002A9C6B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

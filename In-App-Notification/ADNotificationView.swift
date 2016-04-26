@@ -3,7 +3,7 @@
 //  In-App-Notification
 //
 //  Created by Niranjan Ravichandran on 16/04/16.
-//  Copyright © 2016 Adavers. All rights reserved.
+//  Copyright © 2016 Niranjan Ravichandran. All rights reserved.
 //
 
 import UIKit
@@ -18,6 +18,13 @@ public enum ADNotificationType {
     case Small
 }
 
+public enum ADNotificationDirection {
+    case Left
+    case Top
+    case Right
+    case Bottom
+}
+
 final public class ADNotificationView: UIVisualEffectView {
     
     private var messageLabel = UILabel()
@@ -27,6 +34,11 @@ final public class ADNotificationView: UIVisualEffectView {
     public var statusBarVisible = false
     private var isSmallNotification = false
     public var textColor: UIColor?
+    
+    //Notification direction
+    public var entryDirection: ADNotificationDirection = .Top
+    public var exitDirection: ADNotificationDirection = .Top
+    
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -71,7 +83,7 @@ final public class ADNotificationView: UIVisualEffectView {
             iconImageView.image = UIImage(named: "bell.png")
             
         case .Small:
-            ADViewHeight = 27
+            ADViewHeight = 27 //Height for status bar notification
             self.isSmallNotification = true
             self.frame.size.height = ADViewHeight
             self.effect = UIBlurEffect(style: .Light)
@@ -83,9 +95,14 @@ final public class ADNotificationView: UIVisualEffectView {
             iconImageView.image = icon
         }
         
+        var messageLableWidth = UIScreen.mainScreen().bounds.width - 10
+        
+        if !isSmallNotification {
+           messageLableWidth -= 50
+        }
         
         //Frame for notitification title
-        messageLabel.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, ADViewHeight - 10)
+        messageLabel.frame = CGRectMake(0, 0, messageLableWidth, ADViewHeight - 10)
         
         messageLabel.textColor = UIColor.whiteColor()
         
@@ -107,12 +124,23 @@ final public class ADNotificationView: UIVisualEffectView {
         messageLabel.text = message
         self.addSubview(messageLabel)
         
-        
-        self.frame.origin.y -= ADViewHeight
     }
     
     
     public func show(){
+        
+        //Hiding the view intially
+        switch self.entryDirection {
+        case .Left:
+            self.frame.origin.x -= UIScreen.mainScreen().bounds.width
+        case .Top:
+            self.frame.origin.y -= ADViewHeight
+        case .Right:
+            self.frame.origin.x += UIScreen.mainScreen().bounds.width
+        case .Bottom:
+            self.frame.origin.y += UIScreen.mainScreen().bounds.height
+            self.statusBarVisible = true
+        }
         
         if let keyWindow = UIApplication.sharedApplication().keyWindow {
             //To place the view over status bar
@@ -130,7 +158,18 @@ final public class ADNotificationView: UIVisualEffectView {
         //Add the notification to the current window
         UIView.animateWithDuration(0.5, animations: {
             
-            self.frame.origin.y += ADViewHeight
+            //self.frame.origin.y += ADViewHeight
+            
+            switch self.entryDirection {
+            case .Left:
+                self.frame.origin.x += UIScreen.mainScreen().bounds.width
+            case .Top:
+                self.frame.origin.y += ADViewHeight
+            case .Right:
+                self.frame.origin.x -= UIScreen.mainScreen().bounds.width
+            case .Bottom:
+                self.frame.origin.y -= ADViewHeight
+            }
             
             }) { (animationDidComplete) in
                 
@@ -143,8 +182,20 @@ final public class ADNotificationView: UIVisualEffectView {
     //Hide notification method
     @objc private func hideNotification(){
         
-        UIView.animateWithDuration(0.5, animations: { 
-            self.frame.origin.y -= ADViewHeight
+        UIView.animateWithDuration(0.5, animations: {
+            switch (self.entryDirection, self.exitDirection) {
+            case (_ , .Left):
+                self.frame.origin.x -= UIScreen.mainScreen().bounds.width
+            case (.Top, .Top):
+                self.frame.origin.y -= ADViewHeight
+            case (_, .Right):
+                self.frame.origin.x += UIScreen.mainScreen().bounds.width
+            case (.Bottom, .Bottom):
+                self.frame.origin.y += ADViewHeight
+            default:
+                break
+            }
+            
             }) { (completion) in
                 if completion {
                     for item in self.subviews {

@@ -3,7 +3,7 @@
 //  In-App-Notification
 //
 //  Created by Niranjan Ravichandran on 15/04/16.
-//  Copyright © 2016 Adavers. All rights reserved.
+//  Copyright © 2016 Niranjan Ravichandran. All rights reserved.
 //
 
 import UIKit
