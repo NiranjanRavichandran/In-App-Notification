@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		428A038B1CD01A76004FDF38 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 428A038A1CD01A76004FDF38 /* Media.xcassets */; };
+		428A03911CD02365004FDF38 /* ADBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 428A03901CD02365004FDF38 /* ADBundle.bundle */; };
 		429BE6C71CC1AC16002A9C6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BE6C61CC1AC16002A9C6B /* AppDelegate.swift */; };
 		429BE6C91CC1AC16002A9C6B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BE6C81CC1AC16002A9C6B /* ViewController.swift */; };
 		429BE6CC1CC1AC16002A9C6B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429BE6CA1CC1AC16002A9C6B /* Main.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		428A038A1CD01A76004FDF38 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = "In-App-Notification/Media.xcassets"; sourceTree = "<group>"; };
+		428A03901CD02365004FDF38 /* ADBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ADBundle.bundle; sourceTree = "<group>"; };
 		429BE6C31CC1AC16002A9C6B /* In-App-Notification.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "In-App-Notification.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		429BE6C61CC1AC16002A9C6B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		429BE6C81CC1AC16002A9C6B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -40,6 +44,7 @@
 		429BE6BA1CC1AC16002A9C6B = {
 			isa = PBXGroup;
 			children = (
+				428A038A1CD01A76004FDF38 /* Media.xcassets */,
 				429BE6C51CC1AC16002A9C6B /* In-App-Notification */,
 				429BE6C41CC1AC16002A9C6B /* Products */,
 			);
@@ -63,6 +68,7 @@
 				429BE6CF1CC1AC16002A9C6B /* LaunchScreen.storyboard */,
 				429BE6D21CC1AC16002A9C6B /* Info.plist */,
 				429BE7001CC2E7A3002A9C6B /* ADNotificationView.swift */,
+				428A03901CD02365004FDF38 /* ADBundle.bundle */,
 			);
 			path = "In-App-Notification";
 			sourceTree = "<group>";
@@ -125,8 +131,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				428A03911CD02365004FDF38 /* ADBundle.bundle in Resources */,
 				429BE6D11CC1AC16002A9C6B /* LaunchScreen.storyboard in Resources */,
 				429BE6CE1CC1AC16002A9C6B /* Assets.xcassets in Resources */,
+				428A038B1CD01A76004FDF38 /* Media.xcassets in Resources */,
 				429BE6CC1CC1AC16002A9C6B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

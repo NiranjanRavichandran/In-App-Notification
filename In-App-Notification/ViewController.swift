@@ -24,10 +24,11 @@ class ViewController: UIViewController {
     }
     
     func addNotification() {
-        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Small, notificationWithIcon: nil)
-        notifView.backgroundColor = UIColor.redColor()
-        notifView.entryDirection = ADNotificationDirection.Bottom
-        notifView.exitDirection = ADNotificationDirection.Right
+        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Success, notificationWithIcon: nil)
+        //notifView.backgroundColor = UIColor.redColor()
+        notifView.position = ADNotificationPosition.Top
+//        notifView.entryDirection = ADNotificationDirection.Bottom
+//        notifView.exitDirection = ADNotificationDirection.Left
         notifView.show()
     }
 

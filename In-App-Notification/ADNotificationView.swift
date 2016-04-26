@@ -14,7 +14,8 @@ public enum ADNotificationType {
     case Success
     case Alert
     case Error
-    case Blur
+    case DarkBlur
+    case LightBlur
     case Small
 }
 
@@ -22,6 +23,11 @@ public enum ADNotificationDirection {
     case Left
     case Top
     case Right
+    case Bottom
+}
+
+public enum ADNotificationPosition {
+    case Top
     case Bottom
 }
 
@@ -34,9 +40,22 @@ final public class ADNotificationView: UIVisualEffectView {
     public var statusBarVisible = false
     private var isSmallNotification = false
     public var textColor: UIColor?
+    public var position: ADNotificationPosition = .Top {
+        didSet {
+            if position == .Top {
+                entryDirection = .Top
+            }else {
+                entryDirection = .Bottom
+            }
+        }
+    }
     
     //Notification direction
-    public var entryDirection: ADNotificationDirection = .Top
+    public var entryDirection: ADNotificationDirection = .Top {
+        didSet {
+            exitDirection = entryDirection
+        }
+    }
     public var exitDirection: ADNotificationDirection = .Top
     
 
@@ -54,6 +73,12 @@ final public class ADNotificationView: UIVisualEffectView {
         super.init(effect: UIBlurEffect(style: .Dark))
         //super.init(frame: CGRectZero)
         
+        //Loading bundle for images
+        var myBundle = NSBundle(forClass: self.classForCoder)
+        if let bundlePath = myBundle.resourcePath?.stringByAppendingString("/ADBundle.bundle"), resourceBundle = NSBundle(path: bundlePath) {
+            myBundle = resourceBundle
+        }
+        
         //Setting frame size for the notification
         self.frame.size.width = UIScreen.mainScreen().bounds.width
         self.frame.size.height = ADViewHeight
@@ -66,21 +91,26 @@ final public class ADNotificationView: UIVisualEffectView {
         switch notificationType {
         case .Success:
             self.effect = UIBlurEffect(style: .Light)
-            self.backgroundColor = UIColor(red: 0, green: 216/255, blue: 115/255, alpha: 1.0)
-            iconImageView.image = UIImage(named: "ok.png")
+            self.backgroundColor = UIColor(red: 0, green: 225/255, blue: 145/255, alpha: 1.0)
+            iconImageView.image = UIImage(named: "ok.png", inBundle: myBundle, compatibleWithTraitCollection: nil)
             
         case .Error:
             self.effect = UIBlurEffect(style: .Light)
             self.backgroundColor = UIColor(red: 255/255, green: 66/255, blue: 70/255, alpha: 1.0)
-            iconImageView.image = UIImage(named: "cancel.png")
+            iconImageView.image = UIImage(named: "cancel.png", inBundle: myBundle, compatibleWithTraitCollection: nil)
             
         case .Alert:
             self.effect = UIBlurEffect(style: .Light)
             self.backgroundColor = UIColor(red: 43/255, green: 181/255, blue: 255/255, alpha: 1.0)
-            iconImageView.image = UIImage(named: "message.png")
+            iconImageView.image = UIImage(named: "message.png", inBundle: myBundle, compatibleWithTraitCollection: nil)
             
-        case .Blur:
-            iconImageView.image = UIImage(named: "bell.png")
+        case .DarkBlur:
+            iconImageView.image = UIImage(named: "bell.png", inBundle: myBundle, compatibleWithTraitCollection: nil)
+            
+        case .LightBlur:
+            self.effect = UIBlurEffect(style: .Light)
+            iconImageView.image = UIImage(named: "bell.png", inBundle: myBundle, compatibleWithTraitCollection: nil)
+            
             
         case .Small:
             ADViewHeight = 27 //Height for status bar notification
@@ -130,15 +160,20 @@ final public class ADNotificationView: UIVisualEffectView {
     public func show(){
         
         //Hiding the view intially
-        switch self.entryDirection {
-        case .Left:
+        switch (self.entryDirection, self.position) {
+        case (.Left, _):
             self.frame.origin.x -= UIScreen.mainScreen().bounds.width
-        case .Top:
+        case (.Top, .Top):
             self.frame.origin.y -= ADViewHeight
-        case .Right:
+        case (.Bottom, .Top):
+            self.frame.origin.y += ADViewHeight
+        case (.Right, _):
             self.frame.origin.x += UIScreen.mainScreen().bounds.width
-        case .Bottom:
+        case (.Bottom, .Bottom):
             self.frame.origin.y += UIScreen.mainScreen().bounds.height
+            self.statusBarVisible = true
+        case (.Top, .Bottom):
+            self.frame.origin.y += (UIScreen.mainScreen().bounds.height - (ADViewHeight * 2))
             self.statusBarVisible = true
         }
         
@@ -160,15 +195,20 @@ final public class ADNotificationView: UIVisualEffectView {
             
             //self.frame.origin.y += ADViewHeight
             
-            switch self.entryDirection {
-            case .Left:
+            switch (self.entryDirection, self.position ){
+            case (.Left, _):
                 self.frame.origin.x += UIScreen.mainScreen().bounds.width
-            case .Top:
+            case (.Top, .Top):
                 self.frame.origin.y += ADViewHeight
-            case .Right:
-                self.frame.origin.x -= UIScreen.mainScreen().bounds.width
-            case .Bottom:
+            case (.Bottom, .Top):
                 self.frame.origin.y -= ADViewHeight
+            case (.Right, _):
+                self.frame.origin.x -= UIScreen.mainScreen().bounds.width
+            case (.Bottom, .Bottom):
+                self.frame.origin.y -= ADViewHeight
+            case (.Top, .Bottom):
+                self.frame.origin.y += ADViewHeight
+                
             }
             
             }) { (animationDidComplete) in
@@ -183,17 +223,15 @@ final public class ADNotificationView: UIVisualEffectView {
     @objc private func hideNotification(){
         
         UIView.animateWithDuration(0.5, animations: {
-            switch (self.entryDirection, self.exitDirection) {
-            case (_ , .Left):
+            switch (self.exitDirection, self.position) {
+            case (.Left, _):
                 self.frame.origin.x -= UIScreen.mainScreen().bounds.width
-            case (.Top, .Top):
+            case (.Top, _):
                 self.frame.origin.y -= ADViewHeight
-            case (_, .Right):
+            case (.Right, _):
                 self.frame.origin.x += UIScreen.mainScreen().bounds.width
-            case (.Bottom, .Bottom):
+            case (.Bottom, _):
                 self.frame.origin.y += ADViewHeight
-            default:
-                break
             }
             
             }) { (completion) in
