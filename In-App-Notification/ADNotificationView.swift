@@ -31,6 +31,14 @@ public enum ADNotificationPosition {
     case Bottom
 }
 
+//Protocol for ADNotification
+@objc public protocol ADViewDelegate: class {
+    
+    optional func didDismissNotification()
+    optional func didOpenNotification()
+    
+}
+
 final public class ADNotificationView: UIVisualEffectView {
     
     weak var delegate: ADViewDelegate? //Protocol delegate
@@ -159,12 +167,15 @@ final public class ADNotificationView: UIVisualEffectView {
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.notificationOpened)))
         let swipeGesture = UISwipeGestureRecognizer()
         swipeGesture.direction = .Up
-        swipeGesture.addTarget(self, action: #selector(ADNotificationView.hideNotification))
+        swipeGesture.addTarget(self, action: #selector(ADNotificationView.dismissNotification))
         self.addGestureRecognizer(swipeGesture)
     }
     
+    public func show() {
+        show(withBounce: false, completion: nil)
+    }
     
-    public func show(){
+    public func show(withBounce shouldBounce: Bool, completion: (() -> Void)?){
         
         //Hiding the view intially
         switch (self.entryDirection, self.position) {
@@ -219,7 +230,9 @@ final public class ADNotificationView: UIVisualEffectView {
             }
             
         }) { (animationDidComplete) in
-            
+            if let _ = completion {
+                completion!()
+            }
             //After notification is diplayed
             NSTimer.scheduledTimerWithTimeInterval(self.duration, target: self, selector: #selector(self.hideNotification), userInfo: nil, repeats: false)
         }
@@ -252,24 +265,20 @@ final public class ADNotificationView: UIVisualEffectView {
                     keyWindow.windowLevel = UIWindowLevelNormal
                 }
                 
-                if self.delegate != nil {
-                    self.delegate?.didDismissNotification()
-                }
             }
         }
     }
     
-    func notificationOpened() {
+    @objc private func notificationOpened() {
         
-        if delegate != nil {
-            delegate?.didOpenNotification!()
-        }
+        delegate?.didOpenNotification?()
+    }
+    
+    @objc private func dismissNotification() {
+        self.hideNotification()
+        self.delegate?.didDismissNotification?()
+
     }
     
 }
 
-@objc protocol ADViewDelegate: class {
-    
-    func didDismissNotification()
-    optional func didOpenNotification()
-}

@@ -29,13 +29,10 @@ class ViewController: UIViewController, ADViewDelegate {
         notifView.position = ADNotificationPosition.Top
 //        notifView.entryDirection = ADNotificationDirection.Bottom
 //        notifView.exitDirection = ADNotificationDirection.Left
-        notifView.delegate = self
+        //notifView.delegate = self
         notifView.show()
     }
-        
-    func didDismissNotification() {
-        print("**")
-    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
