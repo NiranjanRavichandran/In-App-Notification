@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ADViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,14 +24,18 @@ class ViewController: UIViewController {
     }
     
     func addNotification() {
-        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Success, notificationWithIcon: nil)
+        let notifView = ADNotificationView(message: "Lorem ipsum dolor sit amet", notificationType: ADNotificationType.Error, notificationWithIcon: nil)
         //notifView.backgroundColor = UIColor.redColor()
         notifView.position = ADNotificationPosition.Top
 //        notifView.entryDirection = ADNotificationDirection.Bottom
 //        notifView.exitDirection = ADNotificationDirection.Left
+        notifView.delegate = self
         notifView.show()
     }
-
+        
+    func didDismissNotification() {
+        print("**")
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

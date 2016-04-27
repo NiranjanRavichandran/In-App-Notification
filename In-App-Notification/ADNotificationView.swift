@@ -33,6 +33,8 @@ public enum ADNotificationPosition {
 
 final public class ADNotificationView: UIVisualEffectView {
     
+    weak var delegate: ADViewDelegate? //Protocol delegate
+    
     private var messageLabel = UILabel()
     private var iconImageView = UIImageView()
     private var button = UIButton()
@@ -58,7 +60,7 @@ final public class ADNotificationView: UIVisualEffectView {
     }
     public var exitDirection: ADNotificationDirection = .Top
     
-
+    
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -128,7 +130,7 @@ final public class ADNotificationView: UIVisualEffectView {
         var messageLableWidth = UIScreen.mainScreen().bounds.width - 10
         
         if !isSmallNotification {
-           messageLableWidth -= 50
+            messageLableWidth -= 50
         }
         
         //Frame for notitification title
@@ -154,6 +156,11 @@ final public class ADNotificationView: UIVisualEffectView {
         messageLabel.text = message
         self.addSubview(messageLabel)
         
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.notificationOpened)))
+        let swipeGesture = UISwipeGestureRecognizer()
+        swipeGesture.direction = .Up
+        swipeGesture.addTarget(self, action: #selector(ADNotificationView.hideNotification))
+        self.addGestureRecognizer(swipeGesture)
     }
     
     
@@ -211,10 +218,10 @@ final public class ADNotificationView: UIVisualEffectView {
                 
             }
             
-            }) { (animationDidComplete) in
-                
-                //After notification is diplayed
-                NSTimer.scheduledTimerWithTimeInterval(self.duration, target: self, selector: #selector(self.hideNotification), userInfo: nil, repeats: false)
+        }) { (animationDidComplete) in
+            
+            //After notification is diplayed
+            NSTimer.scheduledTimerWithTimeInterval(self.duration, target: self, selector: #selector(self.hideNotification), userInfo: nil, repeats: false)
         }
     }
     
@@ -234,17 +241,35 @@ final public class ADNotificationView: UIVisualEffectView {
                 self.frame.origin.y += ADViewHeight
             }
             
-            }) { (completion) in
-                if completion {
-                    for item in self.subviews {
-                        item.removeFromSuperview()
-                    }
-                    self.removeFromSuperview()
-                    if let keyWindow = UIApplication.sharedApplication().keyWindow {
-                        //Reset window level
-                        keyWindow.windowLevel = UIWindowLevelNormal
-                    }
+        }) { (completion) in
+            if completion {
+                for item in self.subviews {
+                    item.removeFromSuperview()
                 }
+                self.removeFromSuperview()
+                if let keyWindow = UIApplication.sharedApplication().keyWindow {
+                    //Reset window level
+                    keyWindow.windowLevel = UIWindowLevelNormal
+                }
+                
+                if self.delegate != nil {
+                    self.delegate?.didDismissNotification()
+                }
+            }
         }
     }
+    
+    func notificationOpened() {
+        
+        if delegate != nil {
+            delegate?.didOpenNotification!()
+        }
+    }
+    
+}
+
+@objc protocol ADViewDelegate: class {
+    
+    func didDismissNotification()
+    optional func didOpenNotification()
 }
